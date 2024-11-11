@@ -14,7 +14,6 @@ RUN dpkg --add-architecture armhf \
       g++-arm-linux-gnueabihf \
       gdb \
       libopenblas-dev:armhf \
-      libopenblas-dev:armhf \
       liblapack-dev:armhf \
       libarpack2-dev:armhf \
       libsuperlu-dev:armhf \
@@ -26,6 +25,7 @@ COPY lely-core/ /lely-core
 RUN mkdir /lely-core/build-arm-docker-debian-11
 RUN mkdir /lely-core/install-arm-docker-debian-11
 WORKDIR /lely-core/build-arm-docker-debian-11
+RUN cd .. && make distclean
 RUN ../configure --host=arm-linux-gnueabihf --disable-python --disable-tests --prefix=/lely-core/install-arm-docker-debian-11 \
     && make -j20 \
     && make install

@@ -1,0 +1,42 @@
+FROM debian:11 AS builder
+LABEL authors="andre,gabriel,pedro,victor"
+
+RUN dpkg --add-architecture arm64 \
+    && apt-get -y update \
+    && apt-get -y install \
+      build-essential \
+      pkg-config \
+      cmake \
+      autoconf \
+      automake \
+      libtool \
+      gcc-aarch64-linux-gnu \
+      g++-aarch64-linux-gnu \
+      gdb \
+      libopenblas-dev:arm64 \
+      liblapack-dev:arm64 \
+      libarpack2-dev:arm64 \
+      libsuperlu-dev:arm64 \
+      libarmadillo-dev:arm64 \
+      openssh-client
+
+FROM builder AS builder-lely-core
+RUN mkdir /lely-core && touch /lely-core/xablau
+COPY lely-core/ /lely-core
+RUN mkdir /lely-core/build-arm64-docker-debian-11
+RUN mkdir /lely-core/install-arm64-docker-debian-11
+WORKDIR /lely-core/build-arm64-docker-debian-11
+# RUN cd .. && make distclean
+RUN rm -rf ./*
+RUN ../configure --host=aarch64-linux-gnu --disable-python --disable-tests --prefix=/lely-core/install-arm64-docker-debian-11 \
+    && make -j20 \
+    && make install
+
+FROM builder AS builder-manopla
+RUN mkdir -p /lely-core/install-arm64-docker-debian-11
+ENV PKG_CONFIG_PATH=/lely-core/install-arm64-docker-debian-11/lib/pkgconfig
+COPY --from=builder-lely-core /lely-core/install-arm64-docker-debian-11 /lely-core/install-arm64-docker-debian-11
+ARG UID=1000
+RUN useradd -m -u ${UID} -s /bin/bash builder
+USER builder
+      

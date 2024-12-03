@@ -25,7 +25,8 @@ COPY lely-core/ /lely-core
 RUN mkdir /lely-core/build-arm-docker-debian-11
 RUN mkdir /lely-core/install-arm-docker-debian-11
 WORKDIR /lely-core/build-arm-docker-debian-11
-RUN cd .. && make distclean
+# RUN cd .. && make distclean
+RUN rm -rf ./*
 RUN ../configure --host=arm-linux-gnueabihf --disable-python --disable-tests --prefix=/lely-core/install-arm-docker-debian-11 \
     && make -j20 \
     && make install

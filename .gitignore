@@ -1,3 +1,4 @@
+# Grilo
 /cmake-build-debug-arm/
 /cmake-build-debug-arm-docker/
 /cmake-build-debug-x86_64/
@@ -6,3 +7,6 @@
 tmuxerror
 vgcore.*
 /.idea/
+
+# Grupo
+/build_arm64

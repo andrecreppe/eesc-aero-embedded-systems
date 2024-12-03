@@ -11,6 +11,25 @@ if (ARM_TARGET)
     set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+elseif(ARM64_TARGET)
+    message(STATUS "ARM64 CAPITAN!")
+
+    set(CMAKE_SYSTEM_PROCESSOR aarch64)
+
+    # Name of C compiler.
+    set(CMAKE_C_COMPILER "/usr/bin/aarch64-linux-gnu-gcc-10")
+    set(CMAKE_CXX_COMPILER "/usr/bin/aarch64-linux-gnu-g++-10")
+
+    # Where to look for the target environment. (More paths can be added here)
+    set(CMAKE_FIND_ROOT_PATH /usr/aarch64-linux-gnu)
+    #set(CMAKE_SYSROOT /usr/aarch64-linux-gnu)
+
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE arm64)
 else()
     message(STATUS "X86_64 INSTEAD OF ARM!")
 endif()
@@ -45,6 +64,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${LELY-COAPP_LIBRARIES} blas armad
 target_link_directories(${PROJECT_NAME} PRIVATE ${LELY-COAPP_LIBDIR})
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -g3)
 if (ARM_TARGET)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${LELY-COAPP_INCLUDEDIR})
+    #target_include_directories(${PROJECT_NAME} PRIVATE ${BBB_DEBIAN_11_SYSROOT}/usr/include)
+elseif(ARM64_TARGET)
     target_include_directories(${PROJECT_NAME} PRIVATE ${LELY-COAPP_INCLUDEDIR})
     #target_include_directories(${PROJECT_NAME} PRIVATE ${BBB_DEBIAN_11_SYSROOT}/usr/include)
 endif ()
